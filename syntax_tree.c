@@ -1,22 +1,22 @@
-#define _CRT_SECURE_NO_WARNINGS
+п»ї#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <assert.h>
 
 typedef struct elem_ {
-	int type; // -1 - ошибка, 0 - число, 1 +, 2 -, 3 *, 4 /
+	int type; // -1 - РѕС€РёР±РєР°, 0 - С‡РёСЃР»Рѕ, 1 +, 2 -, 3 *, 4 /
 	int num;
 } elem;
 
-// узел синтаксического дерева
+// СѓР·РµР» СЃРёРЅС‚Р°РєСЃРёС‡РµСЃРєРѕРіРѕ РґРµСЂРµРІР°
 typedef struct node_ {
 	elem el;
-	struct node_* left; // левый операнд
-	struct node_* right; // правый операнд
+	struct node_* left; // Р»РµРІС‹Р№ РѕРїРµСЂР°РЅРґ
+	struct node_* right; // РїСЂР°РІС‹Р№ РѕРїРµСЂР°РЅРґ
 } node;
 
-// текущий символ
+// С‚РµРєСѓС‰РёР№ СЃРёРјРІРѕР»
 char c;
 void get_char() {
 	do {
@@ -52,7 +52,7 @@ node* create_node(elem el, node* left, node* right) {
 	return res;
 }
 
-// взаимнорекурсивные функции sum, term, factor для синтаксического разбора
+// РІР·Р°РёРјРЅРѕСЂРµРєСѓСЂСЃРёРІРЅС‹Рµ С„СѓРЅРєС†РёРё sum, term, factor РґР»СЏ СЃРёРЅС‚Р°РєСЃРёС‡РµСЃРєРѕРіРѕ СЂР°Р·Р±РѕСЂР°
 // sum -> term
 // sum -> term+sum
 // sum -> term-sum
@@ -62,12 +62,12 @@ node* create_node(elem el, node* left, node* right) {
 // term -> factor/term
 //
 // factor -> (sum)
-// factor -> [+-]число
+// factor -> [+-]С‡РёСЃР»Рѕ
 
 node* term();
 node* factor();
 
-// сумма
+// СЃСѓРјРјР°
 node* sum() {
 	node *op1, *op2;
 
@@ -87,7 +87,7 @@ node* sum() {
 	return op1;
 }
 
-// слагаемое
+// СЃР»Р°РіР°РµРјРѕРµ
 node* term() {
 	node *op1, *op2;
 
@@ -107,17 +107,17 @@ node* term() {
 	return op1;
 }
 
-// множитель
+// РјРЅРѕР¶РёС‚РµР»СЊ
 node* factor() {
 	node *op1 = 0;
 	int s = 1;
 	if (c == '(') {
 		get_char();
 		op1 = sum();
-		get_char(); // закрывающая скобка
+		get_char(); // Р·Р°РєСЂС‹РІР°СЋС‰Р°СЏ СЃРєРѕР±РєР°
 	}
 	else {
-		// знак числа
+		// Р·РЅР°Рє С‡РёСЃР»Р°
 		if (c == '-' || c == '+') {
 			s = (c == '+') ? 1 : -1;
 			get_char();
@@ -126,15 +126,15 @@ node* factor() {
 		if (c >= '0' && c <= '9')
 			op1 = create_node(create_elem(0, s * get_num()), 0, 0);
 	}
-	assert(op1 != 0); // если 0, значит в выражении ошибка
+	assert(op1 != 0); // РµСЃР»Рё 0, Р·РЅР°С‡РёС‚ РІ РІС‹СЂР°Р¶РµРЅРёРё РѕС€РёР±РєР°
 	return op1;
 }
 
-// вычисление выражения
+// РІС‹С‡РёСЃР»РµРЅРёРµ РІС‹СЂР°Р¶РµРЅРёСЏ
 double calc_tree(node* cur) {
 	assert(cur != 0);
 
-	// если число, его возвращаем
+	// РµСЃР»Рё С‡РёСЃР»Рѕ, РµРіРѕ РІРѕР·РІСЂР°С‰Р°РµРј
 	if (cur->el.type == 0)
 		return cur->el.num;
 
@@ -166,7 +166,7 @@ void print_elem(elem el) {
 		printf(" / ");
 }
 
-// префиксный обход дерева -- прямая польская нотация
+// РїСЂРµС„РёРєСЃРЅС‹Р№ РѕР±С…РѕРґ РґРµСЂРµРІР° -- РїСЂСЏРјР°СЏ РїРѕР»СЊСЃРєР°СЏ РЅРѕС‚Р°С†РёСЏ
 void prefix_tree(node* cur) {
 	if (cur == 0)
 		return;
@@ -175,7 +175,7 @@ void prefix_tree(node* cur) {
 	prefix_tree(cur->right);
 }
 
-// постфиксный обход дерева -- обратная польская нотация
+// РїРѕСЃС‚С„РёРєСЃРЅС‹Р№ РѕР±С…РѕРґ РґРµСЂРµРІР° -- РѕР±СЂР°С‚РЅР°СЏ РїРѕР»СЊСЃРєР°СЏ РЅРѕС‚Р°С†РёСЏ
 void postfix_tree(node* cur) {
 	if (cur == 0)
 		return;
@@ -198,20 +198,20 @@ int main() {
 	
 	setlocale(0, "rus");
 
-	printf("Введите выражение для разбора:\n");
+	printf("Р’РІРµРґРёС‚Рµ РІС‹СЂР°Р¶РµРЅРёРµ РґР»СЏ СЂР°Р·Р±РѕСЂР°:\n");
 	get_char();
 	st = sum();
 	printf("\n");
 
-	printf("Префиксная нотация:\n");
+	printf("РџСЂРµС„РёРєСЃРЅР°СЏ РЅРѕС‚Р°С†РёСЏ:\n");
 	prefix_tree(st);
 	printf("\n\n");
 
-	printf("Постфиксная нотация:\n");
+	printf("РџРѕСЃС‚С„РёРєСЃРЅР°СЏ РЅРѕС‚Р°С†РёСЏ:\n");
 	postfix_tree(st);
 	printf("\n\n");
 
-	printf("Значение выражения:\n");
+	printf("Р—РЅР°С‡РµРЅРёРµ РІС‹СЂР°Р¶РµРЅРёСЏ:\n");
 	printf("%lf", calc_tree(st));
 	printf("\n\n");
 
